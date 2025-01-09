@@ -1,12 +1,14 @@
 import { useRef, useState } from "react";
 import { checkValidate } from "../utils/checkValidate";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { GoogleAuthProvider, createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../utils/firebase";
 import { useNavigate } from "react-router-dom";
 import { updateProfile } from "firebase/auth";
 import { useDispatch } from "react-redux";
 import { addUser } from "../redux/userSlice";
+import LoginButton from "./LoginButton";
+
 
 const Login = () => {
   const [isSignIn, setIsSignIn] = useState(true);
@@ -17,6 +19,7 @@ const Login = () => {
   const Password = useRef();
   const Navigate = useNavigate();
   const dispatch = useDispatch();
+  const provider = new GoogleAuthProvider();
 
   const handleClick = () => {
     const mess = checkValidate(email.current.value, Password.current.value);
@@ -95,6 +98,45 @@ const Login = () => {
     }
   };
 
+   
+
+  const handleGoogle=()=>{
+
+
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        // This gives you a Google Access Token. You can use it to access the Google API.
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential.accessToken;
+        // The signed-in user info.
+        const user = result.user;
+        const{uid,displayName,email,photoURL}=user;
+        // IdP data available using getAdditionalUserInfo(result)
+        console.log(user);
+        dispatch(
+          addUser({
+            uid: uid,
+            displayName: displayName,
+            email: email,
+            photoURL: photoURL,
+          })
+        );
+
+        Navigate("/browse");
+        // ...
+      }).catch((error) => {
+        // Handle Errors here.
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // The email of the user's account used.
+        const email = error.customData.email;
+        // The AuthCredential type that was used.
+        const credential = GoogleAuthProvider.credentialFromError(error);
+        // ...
+      });
+
+  }
+
   const toggleSignin = () => {
     setIsSignIn(!isSignIn);
   };
@@ -146,6 +188,7 @@ const Login = () => {
         >
           {isSignIn ? "Login in " : "Register "}
         </button>
+        
         <p
           onClick={toggleSignin}
           className="text-white text-2xl my-10 cursor-pointer"
@@ -154,6 +197,11 @@ const Login = () => {
           {isSignIn ? "New User? Create Account" : "Already a user? Sign in"}
         </p>
       </form>
+      <div className="flex justify-center cursor-pointer" onClick={handleGoogle}>
+     {
+       <LoginButton />
+     }
+      </div>
     </div>
   );
 };
