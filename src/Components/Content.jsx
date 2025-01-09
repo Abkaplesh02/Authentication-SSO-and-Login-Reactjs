@@ -3,10 +3,12 @@ import { auth } from "../utils/firebase";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { removeUser } from "../redux/userSlice";
+import { useState } from "react";
 
 const Content=()=>{
     const Navigate=useNavigate();
     const dispatch=useDispatch();
+   
 
     const handleSignOut=()=>{
 
