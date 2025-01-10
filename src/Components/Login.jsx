@@ -42,30 +42,21 @@ const Login = () => {
             updateProfile(auth.currentUser, {
               displayName: fullName.current.value,
               photoURL: "https://example.com/jane-q-user/profile.jpg",
-<<<<<<< HEAD
-=======
               mobile:Mobile.current.value,
->>>>>>> update project
             })
               .then(() => {
                 // Profile updated!
                 // ...
 
-<<<<<<< HEAD
-                const { uid, displayName, email, photoURL } = user;
-=======
+                
                 const { uid, displayName, email, photoURL ,mobile } = user;
->>>>>>> update project
                 dispatch(
                   addUser({
                     uid: uid,
                     displayName: displayName,
                     email: email,
                     photoURL: photoURL,
-<<<<<<< HEAD
-=======
                     mobile:Mobile.current.value,
->>>>>>> update project
                   })
                 );
               })
